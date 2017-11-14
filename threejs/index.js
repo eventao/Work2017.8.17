@@ -3,11 +3,12 @@ function init(wrapperSelector){
     let wrapper = document.querySelector(wrapperSelector);
     let scene = new THREE.Scene();
     //设置透视相机
-    let camera = new THREE.PerspectiveCamera( 75, wrapper.clientWidth / wrapper.clientHeight, 0.1, 1000 );
+    let camera = new THREE.PerspectiveCamera( 75, wrapper.clientWidth / wrapper.clientHeight, 1, 1000 );
     //设置渲染对象
     let renderer = new THREE.WebGLRenderer();
     renderer.setSize( wrapper.clientWidth, wrapper.clientHeight );
     wrapper.appendChild( renderer.domElement );
+    renderer.setClearColor(0x000000,1.0);
     return {
         scene,
         camera,
@@ -355,14 +356,14 @@ function aboutGeometry(){
     let renderer;
     function initThree() {
         let wrapper = document.querySelector('.canvas-wrapper.w7');
-        width = wrapper.clientWidth;
-        height = wrapper.clientHeight;
+        let width = wrapper.clientWidth;
+        let height = wrapper.clientHeight;
         renderer = new THREE.WebGLRenderer({
             antialias : true
         });
         renderer.setSize(width, height);
         wrapper.appendChild(renderer.domElement);
-        renderer.setClearColor(0xFFFFFF, 1.0);
+        renderer.setClearColor(0x000000, 1.0);
     }
 
     let camera;
@@ -415,14 +416,159 @@ function aboutGeometry(){
         animation();
 
     }
+    let flag = false;
     function animation()
     {
         mesh.position.x-=1;
+
+        mesh.position.x = flag?mesh.position.x - 5:mesh.position.x + 5;
+        if(mesh.position.x > 500){
+            flag = true;
+        }
+        if(mesh.position.x < -400){
+            flag = false;
+        }
+
         renderer.render(scene, camera);
         requestAnimationFrame(animation);
     }
     threeStart();
 })();
+
+//正投影相机
+(function(){
+
+    let renderer;
+    function initThree(){
+        let wrapper = document.querySelector('.canvas-wrapper.w8');
+        let width = wrapper.clientWidth;
+        let height = wrapper.clientHeight;
+        renderer = new THREE.WebGLRenderer({antialias : true});
+        renderer.setSize(width,height);
+        wrapper.appendChild(renderer.domElement);
+        renderer.setClearColor(0x000000,1.0);
+    }
+
+    let camera;
+    function initCamera(){
+        camera = new THREE.OrthographicCamera(width / - 2, width / 2, height / 2, height / - 2, 1, 1000);
+        camera.position.x = -300;
+        camera.position.y = 0;
+        camera.position.z = 1000;
+
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+
+        camera.lookAt({
+            x:0,
+            y:0,
+            z:0
+        });
+    }
+
+    let scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    let light,pLight;
+    function initLight() {
+        light = new THREE.AmbientLight(0xFFFFFF);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+        pLight = new THREE.PointLight(0x00FF00);
+        pLight.position.set(0, 0,300);
+        scene.add(pLight);
+    }
+
+    let mesh,cube;
+    function initObject(){
+        let geometry = new THREE.CylinderGeometry(100,150,400);
+        let material = new THREE.MeshLambertMaterial({color:0xFFFFFF});
+        mesh = new THREE.Mesh(geometry,material);
+        scene.add(mesh);
+    }
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        animation();
+    }
+    function animation(){
+        camera.position.x -= 1;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animation);
+    }
+    threeStart();
+})();
+
+(function(){
+    //
+    let wrapper = document.querySelector(".canvas-wrapper.w9");
+    let renderer,width,height;
+    function initThree() {
+        width = wrapper.clientWidth;
+        height = wrapper.clientHeight;
+        renderer = new THREE.WebGLRenderer({
+            antialias : true
+        });
+        renderer.setSize(width, height);
+        wrapper.appendChild(renderer.domElement);
+        renderer.setClearColor(0xFFFFFF, 1.0);
+    }
+
+    let camera;
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.x = 600;
+        camera.position.y = 0;
+        camera.position.z = 600;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+            x : 0,
+            y : 0,
+            z : 0
+        });
+    }
+
+    let scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    let light;
+    function initLight() {
+        light = new THREE.AmbientLight(0xFF0000);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+    }
+
+    let cube;
+    function initObject() {
+        let geometry = new THREE.CubeGeometry( 200, 100, 50,4,4);
+        let material = new THREE.MeshLambertMaterial( { color:0x880000} );
+        let mesh = new THREE.Mesh( geometry,material);
+        mesh.position = new THREE.Vector3(0,0,0);
+        scene.add(mesh);
+    }
+
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        renderer.clear();
+        renderer.render(scene, camera);
+    }
+    threeStart();
+})();
+
 
 //材质(materials) ***************************************************************************/
 //所有uniforms的值可以自由改变（如颜色，纹理，不透明等），值被发送到(shader-着色器)每帧。
