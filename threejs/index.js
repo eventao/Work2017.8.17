@@ -3,11 +3,12 @@ function init(wrapperSelector){
     let wrapper = document.querySelector(wrapperSelector);
     let scene = new THREE.Scene();
     //设置透视相机
-    let camera = new THREE.PerspectiveCamera( 75, wrapper.clientWidth / wrapper.clientHeight, 0.1, 1000 );
+    let camera = new THREE.PerspectiveCamera( 75, wrapper.clientWidth / wrapper.clientHeight, 1, 1000 );
     //设置渲染对象
     let renderer = new THREE.WebGLRenderer();
     renderer.setSize( wrapper.clientWidth, wrapper.clientHeight );
     wrapper.appendChild( renderer.domElement );
+    renderer.setClearColor(0x000000,1.0);
     return {
         scene,
         camera,
@@ -63,33 +64,32 @@ function init(wrapperSelector){
 //burffer geometry 随机线段
 (function (){
     let initObje = init('.canvas-wrapper.w3');
-    var MAX_POINTS = 500;
+    let MAX_POINTS = 500;
     // geometry
-    var geometry = new THREE.BufferGeometry();
+    let geometry = new THREE.BufferGeometry();
 
     // attributes
-    var positions = new Float32Array( MAX_POINTS * 3 ); // 3 vertices per point
+    let positions = new Float32Array( MAX_POINTS * 3 ); // 3 vertices per point
     geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
 
     // draw range
-    var drawCount = 2; // draw the first 2 points, only
+    let drawCount = 2; // draw the first 2 points, only
     geometry.setDrawRange( 0, drawCount );
 
     // material
-    var material = new THREE.LineBasicMaterial( { color: 0xff0000, linewidth: 2 } );
+    let material = new THREE.LineBasicMaterial( { color: 0xff0000, linewidth: 2 } );
 
     // line
-    var line = new THREE.Line( geometry,  material );
+    let line = new THREE.Line( geometry,  material );
 
     //buffer geometry
-    var positions = line.geometry.attributes.position.array;
-    var x, y, z, index;
+    let positions1 = line.geometry.attributes.position.array;
+    let x, y, z, index;
     x = y = z = index = 0;
-    for ( var i = 0, l = MAX_POINTS; i < l; i ++ ) {
-
-        positions[ index ++ ] = x;
-        positions[ index ++ ] = y;
-        positions[ index ++ ] = z;
+    for ( let i = 0, l = MAX_POINTS; i < l; i ++ ) {
+        positions1[ index ++ ] = x;
+        positions1[ index ++ ] = y;
+        positions1[ index ++ ] = z;
         x += ( Math.random() - 0.5 ) * 30;
         y += ( Math.random() - 0.5 ) * 30;
         z += ( Math.random() - 0.5 ) * 30;
@@ -110,7 +110,7 @@ function init(wrapperSelector){
 //线段颜色根据端点颜色插入
 (function(){
     let wrapper = document.querySelector('.canvas-wrapper.w4');
-    var renderer;
+    let renderer;
     function initThree() {
         width = wrapper.clientWidth;
         height = wrapper.clientHeight;
@@ -122,7 +122,7 @@ function init(wrapperSelector){
         renderer.setClearColor(0x000000, 1.0);
     }
 
-    var camera;
+    let camera;
     function initCamera() {
         camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
         camera.position.x = 0;
@@ -138,33 +138,34 @@ function init(wrapperSelector){
         });
     }
 
-    var scene;
+    let scene;
     function initScene() {
         scene = new THREE.Scene();
     }
 
-    var light;
+    let light;
     function initLight() {
         light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
         light.position.set(100, 100, 200);
         scene.add(light);
     }
 
-    var cube;
+    let cube;
     function initObject() {
 
-        var geometry = new THREE.Geometry();
-        var material = new THREE.LineBasicMaterial( { vertexColors: true } );
-        var color1 = new THREE.Color( 0x444444 ), color2 = new THREE.Color( 0xFF0000 );
+        let geometry = new THREE.Geometry();
+        let material = new THREE.LineBasicMaterial( { vertexColors: true } );
+        let color1 = new THREE.Color( 0x444444 ), color2 = new THREE.Color( 0xFF0000 );
 
         // 线的材质可以由2点的颜色决定
-        var p1 = new THREE.Vector3( -100, 0, 100 );
-        var p2 = new THREE.Vector3(  100, 0, -100 );
+        let p1 = new THREE.Vector3( -100, 0, 100 );
+        let p2 = new THREE.Vector3(  100, 0, -100 );
         geometry.vertices.push(p1);
         geometry.vertices.push(p2);
         geometry.colors.push( color1, color2 );
 
-        var line = new THREE.Line( geometry, material, THREE.LinePieces );
+        let line = new THREE.LineSegments( geometry, material );
+        // let line = new THREE.Line( geometry, material, THREE.LinePieces );
         scene.add(line);
     }
 
@@ -182,7 +183,7 @@ function init(wrapperSelector){
 
 //绘制直角坐标系
 (function(){
-    var renderer;
+    let renderer;
     let initThree = function(){
         let wrapper = document.querySelector('.canvas-wrapper.w5');
         width = wrapper.clientWidth;
@@ -194,7 +195,7 @@ function init(wrapperSelector){
         wrapper.appendChild(renderer.domElement);
         renderer.setClearColor(0x000000,1.0);
     };
-    var camera;
+    let camera;
     function initCamera() {
         camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
         camera.position.x = 0;
@@ -211,33 +212,33 @@ function init(wrapperSelector){
 
     }
 
-    var scene;
+    let scene;
     function initScene() {
         scene = new THREE.Scene();
     }
 
-    var light;
+    let light;
     function initLight() {
         light = new THREE.DirectionalLight(0x000000, 1.0, 0);
         light.position.set(100, 100, 200);
         scene.add(light);
     }
 
-    var cube;
+    let cube;
     function initObject() {
-        var geometry = new THREE.Geometry();
+        let geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3( - 500, 0, 0 ) );
         geometry.vertices.push(new THREE.Vector3( 500, 0, 0 ) );
 
-        for ( var i = 0; i <= 20; i ++ ) {
-            var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0.2 } ) );
+        for ( let i = 0; i <= 20; i ++ ) {
+            let line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0.2 } ) );
             line.position.y = ( i * 50 ) - 500;
             scene.add( line );
 
-            var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0.2 } ) );
-            line.position.x = ( i * 50 ) - 500;
-            line.rotation.z = 90 * Math.PI / 180;
-            scene.add( line );
+            let line2 = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0.2 } ) );
+            line2.position.x = ( i * 50 ) - 500;
+            line2.rotation.z = 90 * Math.PI / 180;
+            scene.add( line2 );
         }
 
     }
@@ -285,7 +286,7 @@ function init(wrapperSelector){
 })();
 //只能用于geometry但不能用户buffer geometry的属性修改。
 function aboutGeometry(){
-    var geometry = new THREE.Geometry();
+    let geometry = new THREE.Geometry();
     geometry.verticesNeedUpdate = true;
     geometry.elementsNeedUpdate = true;
     geometry.morphTargetsNeedUpdate = true;
@@ -295,6 +296,308 @@ function aboutGeometry(){
     geometry.tangentsNeedUpdate = true;
     geometry.dynamic = true;
 }
+
+//摄像头运动
+(function(){
+    let renderer;
+    function initThree() {
+        let wrapper = document.querySelector('.canvas-wrapper.w6');
+        width = wrapper.clientWidth;
+        height = wrapper.clientHeight;
+        renderer = new THREE.WebGLRenderer({
+            antialias : true
+        });
+        renderer.setSize(width, height);
+        wrapper.appendChild(renderer.domElement);
+        renderer.setClearColor(0x000000, 1.0);
+    }
+
+    let camera;
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 600;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+            x : 0,
+            y : 0,
+            z : 0
+        });
+    }
+
+    let scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    let light;
+    function initLight() {
+        light = new THREE.AmbientLight(0xFFFFFF);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+        light = new THREE.PointLight(0x00FF00);
+        light.position.set(0, 0,300);
+        scene.add(light);
+    }
+
+    let cube;
+    function initObject() {
+        let geometry = new THREE.CylinderGeometry( 100,150,400);
+        let material = new THREE.MeshLambertMaterial( { color:0xFFFF00} );
+        let mesh = new THREE.Mesh( geometry,material);
+        mesh.position = new THREE.Vector3(0,0,0);
+        scene.add(mesh);
+    }
+
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        animation();
+
+    }
+
+    let flag = false;
+    function animation(){
+        //renderer.clear();
+
+        camera.position.x = flag?camera.position.x - 5:camera.position.x + 5;
+        if(camera.position.x > 500){
+            flag = true;
+        }
+        if(camera.position.x < -400){
+            flag = false;
+        }
+        console.log(camera.position.x);
+        renderer.render(scene, camera);
+        requestAnimationFrame(animation);
+    }
+    threeStart();
+})();
+
+//对象本身运动
+(function(){
+    let renderer;
+    function initThree() {
+        let wrapper = document.querySelector('.canvas-wrapper.w7');
+        let width = wrapper.clientWidth;
+        let height = wrapper.clientHeight;
+        renderer = new THREE.WebGLRenderer({
+            antialias : true
+        });
+        renderer.setSize(width, height);
+        wrapper.appendChild(renderer.domElement);
+        renderer.setClearColor(0x000000, 1.0);
+    }
+
+    let camera;
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 600;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+            x : 0,
+            y : 0,
+            z : 0
+        });
+    }
+
+    let scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    let light;
+    function initLight() {
+        light = new THREE.AmbientLight(0xFF0000);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+        light = new THREE.PointLight(0x00FF00);
+        light.position.set(0, 0,300);
+        scene.add(light);
+    }
+
+    let cube;
+    let mesh;
+    function initObject() {
+        let geometry = new THREE.CylinderGeometry( 100,150,400);
+        let material = new THREE.MeshLambertMaterial( { color:0xFFFFFF} );
+        mesh = new THREE.Mesh( geometry,material);
+        mesh.position = new THREE.Vector3(0,0,0);
+        scene.add(mesh);
+    }
+
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        animation();
+
+    }
+    let flag = false;
+    function animation()
+    {
+        mesh.position.x-=1;
+
+        mesh.position.x = flag?mesh.position.x - 5:mesh.position.x + 5;
+        if(mesh.position.x > 500){
+            flag = true;
+        }
+        if(mesh.position.x < -400){
+            flag = false;
+        }
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animation);
+    }
+    threeStart();
+})();
+
+//正投影相机
+(function(){
+
+    let renderer;
+    function initThree(){
+        let wrapper = document.querySelector('.canvas-wrapper.w8');
+        let width = wrapper.clientWidth;
+        let height = wrapper.clientHeight;
+        renderer = new THREE.WebGLRenderer({antialias : true});
+        renderer.setSize(width,height);
+        wrapper.appendChild(renderer.domElement);
+        renderer.setClearColor(0x000000,1.0);
+    }
+
+    let camera;
+    function initCamera(){
+        camera = new THREE.OrthographicCamera(width / - 2, width / 2, height / 2, height / - 2, 1, 1000);
+        camera.position.x = -300;
+        camera.position.y = 0;
+        camera.position.z = 1000;
+
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+
+        camera.lookAt({
+            x:0,
+            y:0,
+            z:0
+        });
+    }
+
+    let scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    let light,pLight;
+    function initLight() {
+        light = new THREE.AmbientLight(0xFFFFFF);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+        pLight = new THREE.PointLight(0x00FF00);
+        pLight.position.set(0, 0,300);
+        scene.add(pLight);
+    }
+
+    let mesh,cube;
+    function initObject(){
+        let geometry = new THREE.CylinderGeometry(100,150,400);
+        let material = new THREE.MeshLambertMaterial({color:0xFFFFFF});
+        mesh = new THREE.Mesh(geometry,material);
+        scene.add(mesh);
+    }
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        animation();
+    }
+    function animation(){
+        camera.position.x -= 1;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animation);
+    }
+    threeStart();
+})();
+
+(function(){
+    //
+    let wrapper = document.querySelector(".canvas-wrapper.w9");
+    let renderer,width,height;
+    function initThree() {
+        width = wrapper.clientWidth;
+        height = wrapper.clientHeight;
+        renderer = new THREE.WebGLRenderer({
+            antialias : true
+        });
+        renderer.setSize(width, height);
+        wrapper.appendChild(renderer.domElement);
+        renderer.setClearColor(0xFFFFFF, 1.0);
+    }
+
+    let camera;
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.x = 600;
+        camera.position.y = 0;
+        camera.position.z = 600;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+            x : 0,
+            y : 0,
+            z : 0
+        });
+    }
+
+    let scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    let light;
+    function initLight() {
+        light = new THREE.AmbientLight(0xFF0000);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+    }
+
+    let cube;
+    function initObject() {
+        let geometry = new THREE.CubeGeometry( 200, 100, 50,4,4);
+        let material = new THREE.MeshLambertMaterial( { color:0x880000} );
+        let mesh = new THREE.Mesh( geometry,material);
+        mesh.position = new THREE.Vector3(0,0,0);
+        scene.add(mesh);
+    }
+
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        renderer.clear();
+        renderer.render(scene, camera);
+    }
+    threeStart();
+})();
+
 
 //材质(materials) ***************************************************************************/
 //所有uniforms的值可以自由改变（如颜色，纹理，不透明等），值被发送到(shader-着色器)每帧。
