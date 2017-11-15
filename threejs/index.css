@@ -7,6 +7,7 @@ body{
     align-items:flex-start;
     align-content:flex-start;
     flex-wrap: wrap;
+    overflow-y:auto;
 }
 html,body{
     width:100%;
