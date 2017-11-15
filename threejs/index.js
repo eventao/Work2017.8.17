@@ -570,44 +570,7 @@ function aboutGeometry(){
     threeStart();
 })();
 
-//贴图
-(function(){
-    
-    let wrapper,camera,scene,renderer,mesh,width,height;
-    function init(){
-        wrapper = document.querySelector('.canvas-wrapper.w10');
-        width = wrapper.clientWidth;
-        height = wrapper.clientHeight;
-        renderer = new THREE.WebGLRenderer();
-        renderer.setSize(width,height);
-        wrapper.appendChild(renderer.domElement);
-        camera = new THREE.PerspectiveCamera(70,width/height,1,1000);
-        camera.position.z = 400;
-        scene = new THREE.Scene();
 
-        //A begin
-        let geometry = new THREE.PlaneGeometry(500,300,1,1);
-        geometry.vertices[0].uv = new THREE.Vector2(0,0);
-        geometry.vertices[1].uv = new THREE.Vector2(2,0);
-        geometry.vertices[2].uv = new THREE.Vector2(2,2);
-        geometry.vertices[3].uv = new THREE.Vector2(0,2);
-        // A end
-
-
-        //B begin
-        let texture = THREE.ImageUtils.loadTexture('',null,t=>{
-            
-        });
-        //B end
-
-    }
-    function onWindowResize(){
-
-    }
-    function animate(){
-
-    }
-})();
 
 //材质(materials) ***************************************************************************/
 //所有uniforms的值可以自由改变（如颜色，纹理，不透明等），值被发送到(shader-着色器)每帧。
