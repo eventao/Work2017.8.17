@@ -534,6 +534,7 @@ function aboutGeometry(){
     threeStart();
 })();
 
+//环境光源
 (function(){
     //
     let wrapper = document.querySelector(".canvas-wrapper.w9");
@@ -597,6 +598,7 @@ function aboutGeometry(){
     }
     threeStart();
 })();
+
 
 
 //材质(materials) ***************************************************************************/
