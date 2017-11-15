@@ -63,6 +63,7 @@ class ClockPro {
 
     drawSecondPoint(){
         let now = new Date();
+        console.log(now.getTime());
         let second = now.getSeconds();
         this.ctx.lineWidth = 1;
         let r = this.r - this.edge;

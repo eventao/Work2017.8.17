@@ -24,22 +24,22 @@ function init(wrapperSelector){
 (function(){
     let initObje = init('.canvas-wrapper.w1');
 
-    let geometry = new THREE.PlaneGeometry(300,300,1,1);
+    // let geometry = new THREE.PlaneGeometry(300,300,1,1);
     // geometry.vertices[0].uv = new THREE.Vector2(0.5,0.5);
     // geometry.vertices[1].uv = new THREE.Vector2(1.5,0.5);
     // geometry.vertices[2].uv = new THREE.Vector2(1.5,1.5);
     // geometry.vertices[3].uv = new THREE.Vector2(0.5,1.5);
 
-    let cubeGeometry = new THREE.CubeGeometry(150, 150, 150);
+    let cubeGeometry = new THREE.CubeGeometry(300, 300, 300);
 
-    let clockPro = new ClockPro(150);
+    let clockPro = new ClockPro(100);
 
     let texture = new THREE.Texture(clockPro.canvas);
     texture.needsUpdate = true;
     let material = new THREE.MeshBasicMaterial( { map: texture } );
     //绘制平面
     let mesh = new THREE.Mesh( cubeGeometry, material );
-    initObje.camera.position.z = 300;
+    initObje.camera.position.z = 500;
     initObje.scene.add( mesh );
 
     //动画渲染
