@@ -5,6 +5,7 @@ html,body{
 
 body{
     overflow-y:auto;
+    display:flex;
 }
 
 *{
@@ -14,8 +15,10 @@ body{
 }
 
 .canvas-wrapper{
-    width:1000px;
-    height:600px;
+    width:500px;
+    height:300px;
+    background-color:#333;
+    margin-right:5px;
 }
 
 
