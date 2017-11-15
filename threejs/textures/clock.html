@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Three</title>
+        <title>Clock</title>
     </head>
     <body>
 
@@ -12,7 +12,11 @@
 
         <script src="./clock.js"></script>
         <script>
-            let clockPro = new ClockPro("#canvasWrapper");
+            let wrapper = document.querySelector("#canvasWrapper");
+            let radius = wrapper.clientWidth / 2;
+            let clockPro = new ClockPro(radius);
+            wrapper.appendChild(clockPro.canvas);
+
         </script>
     </body>
 
