@@ -13,11 +13,17 @@
     let container, stats;
     let camera, controls, scene, renderer;
     let cross;
+    let width,height;
     init();
     animate();
 
+
     function init() {
-        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.01, 1e10 );
+        container = document.querySelector( '.container' );
+        width = container.clientWidth;
+        height = container.clientHeight;
+
+        camera = new THREE.PerspectiveCamera( 60, width / height, 0.01, 1e10 );
         camera.position.z = 0.2;
         controls = new THREE.TrackballControls( camera );
 
@@ -40,24 +46,35 @@
 
         camera.add( dirLight );
         camera.add( dirLight.target );
-// A begin
-        let material = new THREE.MeshLambertMaterial( { color:0xffffff, side: THREE.DoubleSide } );
+        let material = new THREE.MeshLambertMaterial( { color:0xff0000, side: THREE.DoubleSide } );
         let loader = new THREE.VTKLoader();
-        loader.addEventListener( 'load', function ( event ) {
-            let geometry = event.content;
-            let mesh = new THREE.Mesh( geometry, material );
+        loader.addEventListener( 'load',
+            function ( event ) {
+                let geometry = event.content;
+                let mesh = new THREE.Mesh( geometry, material );
+                mesh.position.setY( - 0.09 );
+                scene.add( mesh );
+            },
+            function(param){
+                console.log(param);
+            },
+            function(){
+
+            }
+        );
+
+        loader.load( "../assets/d3-models/bunny.vtk",data => {
+            let mesh = new THREE.Mesh( data, material );
             mesh.position.setY( - 0.09 );
             scene.add( mesh );
-        } );
-        loader.load( "/assets/d3-models/BoxesEtc01.skp" );
-// A end
+        });
+
+
         // renderer
         renderer = new THREE.WebGLRenderer( { antialias: false } );
-        renderer.setClearColor( 0x000000, 1 );
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        container = document.createElement( 'div' );
-        container.classList.add('container');
-        document.body.appendChild( container );
+        renderer.setClearColor( 0xaaaaaa, 1 );
+
+        renderer.setSize( width, height );
         container.appendChild( renderer.domElement );
 
         stats = new Stats();
@@ -69,9 +86,9 @@
     }
 
     function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.setSize( width, height );
         controls.handleResize();
     }
 

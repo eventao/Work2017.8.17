@@ -24,12 +24,6 @@ function init(wrapperSelector){
 (function(){
     let initObje = init('.canvas-wrapper.w1');
 
-    // let geometry = new THREE.PlaneGeometry(300,300,1,1);
-    // geometry.vertices[0].uv = new THREE.Vector2(0.5,0.5);
-    // geometry.vertices[1].uv = new THREE.Vector2(1.5,0.5);
-    // geometry.vertices[2].uv = new THREE.Vector2(1.5,1.5);
-    // geometry.vertices[3].uv = new THREE.Vector2(0.5,1.5);
-
     let cubeGeometry = new THREE.CubeGeometry(300, 300, 300);
 
     let clockPro = new ClockPro(100);
