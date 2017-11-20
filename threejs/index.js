@@ -373,7 +373,6 @@ function aboutGeometry(){
         if(camera.position.x < -400){
             flag = false;
         }
-        console.log(camera.position.x);
         renderer.render(scene, camera);
         requestAnimationFrame(animation);
     }

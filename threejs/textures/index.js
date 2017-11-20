@@ -39,14 +39,16 @@ function init(wrapperSelector){
     let material = new THREE.MeshBasicMaterial( { map: texture } );
     //绘制平面
     let mesh = new THREE.Mesh( cubeGeometry, material );
+    mesh.rotation.y -= 2.5;
+    mesh.rotation.x -= 2.5;
     initObje.camera.position.z = 500;
     initObje.scene.add( mesh );
 
     //动画渲染
     function animate() {
         requestAnimationFrame( animate );
-        mesh.rotation.y -= 0.01;
-        mesh.rotation.x -= 0.01;
+        // mesh.rotation.y -= 0.01;
+        // mesh.rotation.x -= 0.01;
         texture.needsUpdate = true;
         initObje.renderer.render( initObje.scene, initObje.camera );
     }
