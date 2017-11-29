@@ -16,11 +16,22 @@
         renderer.setClearColor(0xffff00,1.0);
     })();
 
+    (function(){
+        let quaternion = new THREE.Quaternion();
+        quaternion.setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI / 2);
+
+        let vector = new THREE.Vector3(1,0,0);
+        vector.applyQuaternion(quaternion);
+    })();
+
     // 网格的边长是1000，每个小网格的边长是50
     (function initGrid(){
         var helper = new THREE.GridHelper( 1000, 50,0x0000ff, 0x808080 );
         scene.add( helper );
     })();
     renderer.render(scene, camera);
+
+
+
 
 })();
