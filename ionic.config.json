@@ -1,0 +1,8 @@
+{
+  "name": "Work2017.8.17",
+  "app_id": "",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
