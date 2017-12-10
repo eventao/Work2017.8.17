@@ -9,6 +9,8 @@ import {ThreeDPage} from "../pages/three-d/three-d";
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { ClockProvider } from '../providers/clock/clock';
+import { VtkLoaderProvider } from '../providers/model-loader/vtk-loader-provider';
 
 
 @NgModule({
@@ -32,7 +34,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ClockProvider,
+    VtkLoaderProvider
   ]
 })
 export class AppModule {}
