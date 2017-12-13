@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import {ThreeDPage} from "../pages/three-d/three-d";
+import {WebglPage} from "../pages/webgl/webgl";
 
 @Component({
   templateUrl: 'app.html'
@@ -13,7 +14,7 @@ import {ThreeDPage} from "../pages/three-d/three-d";
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = ThreeDPage;
+  rootPage: any = WebglPage;
 
   pages: Array<{title: string, component: any}>;
 
@@ -24,7 +25,8 @@ export class MyApp {
     this.pages = [
       { title: 'ThreeDPage', component:ThreeDPage  },
       { title: 'List', component: ListPage },
-      { title: 'Home',component:HomePage }
+      { title: 'Home',component:HomePage },
+      { title: 'WebglPage',component:WebglPage }
     ];
 
   }

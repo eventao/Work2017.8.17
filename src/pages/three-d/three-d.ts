@@ -33,7 +33,7 @@ export class ThreeDPage {
   private generateCamera() {
     this.width = this.wrapper.nativeElement.clientWidth;
     this.height = this.wrapper.nativeElement.clientHeight;
-    this.camera = new THREE.PerspectiveCamera(80, this.width / this.height, 1, 1000);
+    this.camera = new THREE.PerspectiveCamera(80, this.width / this.height, 1, 10000);
     this.camera.position.y = 500;
     this.camera.position.z = 550;
     this.camera.rotation.x = -1;
@@ -121,19 +121,6 @@ export class ThreeDPage {
   }
 
   private generateControl() {
-    // console.log(TrackballControls);
-    // let trackControls = new TrackballControls( this.camera );
-    //
-    // trackControls.rotateSpeed = 5.0;
-    // trackControls.zoomSpeed = 5;
-    // trackControls.panSpeed = 2;
-    //
-    // trackControls.noZoom = false;
-    // trackControls.noPan = false;
-    //
-    // trackControls.staticMoving = true;
-    // trackControls.dynamicDampingFactor = 0.3;
-
     let control = OrbitControls(THREE);
     this.orControls = new control(this.camera, this.renderer.domElement);
   }
