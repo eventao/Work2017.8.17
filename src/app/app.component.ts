@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import {ThreeDPage} from "../pages/three-d/three-d";
+import {ModelLoadPage} from "../pages/model-load/model-load";
 import {WebglPage} from "../pages/webgl/webgl";
 
 @Component({
@@ -24,9 +25,10 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'ThreeDPage', component:ThreeDPage  },
+      { title: 'WebglPage', component:WebglPage  },
+      { title: 'ModelLoad', component:ModelLoadPage  },
       { title: 'List', component: ListPage },
-      { title: 'Home',component:HomePage },
-      { title: 'WebglPage',component:WebglPage }
+      { title: 'Home',component:HomePage }
     ];
 
   }

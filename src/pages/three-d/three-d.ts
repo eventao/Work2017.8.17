@@ -2,7 +2,7 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import * as THREE from 'three';
 import * as OrbitControls from 'three-orbit-controls';
-import {TrackballControls} from 'three-trackballcontrols';
+// import {TrackballControls} from 'three-trackballcontrols';
 import {ClockProvider} from "../../providers/clock/clock";
 import {Vector} from "../../models/CommonModel";
 import {VtkLoaderProvider} from "../../providers/model-loader/vtk-loader-provider";
@@ -26,7 +26,7 @@ export class ThreeDPage {
   vtkLoaderProvider: VtkLoaderProvider;
   pillars = [];
   pillarAnimateLimit = 0;
-  rabbit = [];
+  rabbit = null;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public eleRef: ElementRef) {}
 
@@ -82,8 +82,8 @@ export class ThreeDPage {
   }
 
   //柱子随机位移
-  private animatePillar(pillars){
-    if(this.pillarAnimateLimit % 100 === 0){
+  private animatePillar(pillars) {
+    if (this.pillarAnimateLimit % 100 === 0) {
       let pR = 400;
       let innerLimit = 200;
       pillars.forEach(cube => {
@@ -121,6 +121,19 @@ export class ThreeDPage {
   }
 
   private generateControl() {
+    // console.log(TrackballControls);
+    // let trackControls = new TrackballControls( this.camera );
+    //
+    // trackControls.rotateSpeed = 5.0;
+    // trackControls.zoomSpeed = 5;
+    // trackControls.panSpeed = 2;
+    //
+    // trackControls.noZoom = false;
+    // trackControls.noPan = false;
+    //
+    // trackControls.staticMoving = true;
+    // trackControls.dynamicDampingFactor = 0.3;
+
     let control = OrbitControls(THREE);
     this.orControls = new control(this.camera, this.renderer.domElement);
   }
@@ -130,15 +143,23 @@ export class ThreeDPage {
     this.scene.add(gridHelper);
   }
 
-  private loadModel(){
+  private rabitAnimation(rabitModel){
+    if(rabitModel && rabitModel.position){
+      rabitModel.position.x += 0.1;
+      rabitModel.rotation.x += 0.01;
+      rabitModel.rotation.z += 0.01;
+    }
+  }
+  private loadModel() {
     this.vtkLoaderProvider = new VtkLoaderProvider();
     this.vtkLoaderProvider.loadModel(THREE).subscribe(data => {
 
       let material = new THREE.MeshLambertMaterial({color: 0xff0000, side: THREE.DoubleSide});
       let mesh = new THREE.Mesh(data, material);
-      mesh.position.y = 0;
-      mesh.position.z = 300;
-      mesh.position.x = 200;
+      mesh.position.setY(0);
+      mesh.position.setZ(0);
+      mesh.position.setX(0);
+      // mesh.position.setY( - 0.09 );
 
       this.scene.add(mesh);
       this.rabbit = mesh;
@@ -152,7 +173,8 @@ export class ThreeDPage {
     this.texture.needsUpdate = true;
     this.clockProvider.start();
     this.renderer.render(this.scene, this.camera);
-    this.animatePillar(this.pillars);
+    // this.animatePillar(this.pillars);
+    this.rabitAnimation(this.rabbit);
     this.pillarAnimateLimit++;
   }
 
@@ -160,6 +182,7 @@ export class ThreeDPage {
   ionViewDidEnter() {
     this.generateCamera();
     this.generateScene();
+
     this.generateRenderer();
     this.generateControl();
 

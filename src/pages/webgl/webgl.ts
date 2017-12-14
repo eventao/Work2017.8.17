@@ -2,7 +2,6 @@ import {Component, ViewChild} from '@angular/core';
 import {IonicPage} from 'ionic-angular';
 import * as mat4 from 'gl-mat4';
 
-
 @IonicPage()
 @Component({
   selector: 'page-webgl',
@@ -13,6 +12,8 @@ export class WebglPage {
   @ViewChild('ioncontent') content;
   @ViewChild('canvas') canvas;
   @ViewChild('drawCube') drawCube;
+  @ViewChild('drawCubeTexture') drawCubeTexture;
+
   width: number;
   height: number;
   gl: WebGLRenderingContext;
@@ -27,9 +28,6 @@ export class WebglPage {
   projectionMatrix;
   modelViewMatrix;
 
-
-
-
   constructor() {
   }
 
@@ -42,7 +40,7 @@ export class WebglPage {
     this.draw(this.gl, this.square);
 
     this.drawCube.init();
-
+    this.drawCubeTexture.init();
   }
 
   // 绘制正方形的五个步骤
@@ -171,7 +169,6 @@ export class WebglPage {
     gl.drawArrays(obj.primtype, 0, obj.nVerts);
 
   }
-
 
 
 }
