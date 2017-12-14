@@ -21,39 +21,29 @@ export class DrawCubeTextureComponent {
 
   shaderProgram;
   shaderVertexPositionAttribute;
-  shaderVertexColorAttribute;
 
-  vertexShaderSource =
+  vertexShaderSource =`attribute vec3 vertexPos;
+        attribute vec2 texCoord;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        varying vec2 vTexCoord;
+        void main(void) {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(vertexPos, 1.0);
+            vTexCoord = texCoord;
+        }`;
+  fragmentShaderSource =`precision mediump float;
+        varying vec2 vTexCoord;
+        uniform sampler2D uSampler;
+        void main(void) {
+          gl_FragColor = texture2D(uSampler, vec2(vTexCoord.s, vTexCoord.t));
+      }`;
 
-    "    attribute vec3 vertexPos;\n" +
-    "    attribute vec2 texCoord;\n" +
-    "    uniform mat4 modelViewMatrix;\n" +
-    "    uniform mat4 projectionMatrix;\n" +
-    "    varying vec2 vTexCoord;\n" +
-    "    void main(void) {\n" +
-    "		// Return the transformed and projected vertex value\n" +
-    "        gl_Position = projectionMatrix * modelViewMatrix * \n" +
-    "            vec4(vertexPos, 1.0);\n" +
-    "        // Output the texture coordinate in vTexCoord\n" +
-    "        vTexCoord = texCoord;\n" +
-    "    }\n";
-
-  fragmentShaderSource =
-    "    precision mediump float;\n" +
-    "    varying vec2 vTexCoord;\n" +
-    "    uniform sampler2D uSampler;\n" +
-    "    void main(void) {\n" +
-    "    // Return the pixel color: always output white\n" +
-    "    gl_FragColor = texture2D(uSampler, vec2(vTexCoord.s, vTexCoord.t));\n" +
-    "}\n";
   okToRun: boolean;
   webGLTexture: any;
-  duration = 5000; // ms
+  duration = 5000;
   currentTime = Date.now();
 
-
-  constructor(public elementErf: ElementRef) {
-  }
+  constructor(public elementErf: ElementRef) {}
 
   initCanvasSize() {
     let container = this.elementErf.nativeElement.querySelector('.container');
@@ -73,11 +63,9 @@ export class DrawCubeTextureComponent {
   }
 
   initMatrices(canvas) {
-    // Create a model view matrix with object at 0, 0, -8
     this.modelViewMatrix = this.mat4.create();
     this.mat4.translate(this.modelViewMatrix, this.modelViewMatrix, [0, 0, -8]);
 
-    // Create a project matrix with 45 degree field of view
     this.projectionMatrix = this.mat4.create();
     this.mat4.perspective(this.projectionMatrix, Math.PI / 4, canvas.width / canvas.height, 1, 10000);
 
@@ -85,10 +73,8 @@ export class DrawCubeTextureComponent {
     this.vec3.normalize(this.rotationAxis, [1, 1, 1]);
   }
 
-  // Create the vertex, color and index data for a multi-colored cube
   createCube(gl) {
 
-    // Vertex Data
     let vertexBuffer;
     vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -131,6 +117,7 @@ export class DrawCubeTextureComponent {
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verts), gl.STATIC_DRAW);
 
+
     let texCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
     let textureCoords = [
@@ -172,6 +159,7 @@ export class DrawCubeTextureComponent {
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 
+
     // Index data (defines the triangles to be drawn)
     let cubeIndexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeIndexBuffer);
@@ -212,7 +200,6 @@ export class DrawCubeTextureComponent {
 
     return shader;
   }
-
 
   handleTextureLoaded(gl, texture) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -332,6 +319,5 @@ export class DrawCubeTextureComponent {
     this.initViewport(gl, this.cubeCanvas);
     this.invoke();
   }
-
 
 }
