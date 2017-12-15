@@ -44,9 +44,9 @@ export class ThreeDPage {
   }
 
   private generateRenderer() {
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer({antialias:true});
     this.renderer.setSize(this.width, this.height - 4);
-    this.renderer.setClearColor(0xffffff, 1.0);
+    this.renderer.setClearColor(0x000000, 1.0);
     this.wrapper.nativeElement.appendChild(this.renderer.domElement);
   }
 
@@ -59,9 +59,9 @@ export class ThreeDPage {
 
   //添加柱子
   private addPillar() {
-    let cubes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf];
-    let pR = 400;
-    let innerLimit = 200;
+    let cubes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let pR = 800;
+    let innerLimit = 50;
     cubes.forEach((c, i) => {
       let rX1 = this.RandomBoth(-pR, -innerLimit);
       let rX2 = this.RandomBoth(innerLimit, pR);
@@ -71,8 +71,9 @@ export class ThreeDPage {
       let rX = randomChoiseBoth > 0.5 ? rX1 : rX2;
       randomChoiseBoth = Math.random();
       let rZ = randomChoiseBoth > 0.5 ? rZ1 : rZ2;
-      let cube = this.generateCube(25, 300, 25, 0x00a1cb);
-      cube.position.y = 150;
+      let randomColor = this.RandomBoth(0x000000, 0xffffff);
+      let cube = this.generateCube(25, 25, 25, randomColor);
+      cube.position.y = 12.5;
       cube.position.x = rX;
       cube.position.z = rZ;
       this.scene.add(cube);
@@ -83,7 +84,7 @@ export class ThreeDPage {
 
   //柱子随机位移
   private animatePillar(pillars) {
-    if (this.pillarAnimateLimit % 100 === 0) {
+    if (this.pillarAnimateLimit % 30 === 0) {
       let pR = 400;
       let innerLimit = 200;
       pillars.forEach(cube => {
@@ -98,7 +99,6 @@ export class ThreeDPage {
         cube.position.x = rX;
         cube.position.z = rZ;
       });
-
     }
   }
 
@@ -116,8 +116,36 @@ export class ThreeDPage {
     let material = new THREE.MeshBasicMaterial({map: this.texture});
     let mesh = this.clockProvider.mesh = this.clockProvider.mesh || new THREE.Mesh(cubeGeometry, material);
     mesh.position.y = 64;
+    mesh.position.x = -200;
     this.scene.add(mesh);
     return mesh;
+  }
+
+  private addTextureCube(poi, poiVerte = null) {
+    let cubeGeometry = new THREE.CubeGeometry(128, 128, 128);
+    let ra = Math.random();
+    let cueColor = '../assets/imgs/cue-color.jpg';
+    let map = THREE.ImageUtils.loadTexture(ra > 0.5 ? '../assets/imgs/cue.jpg' : cueColor);
+    let imgMaterial = new THREE.MeshBasicMaterial({map});
+    let cubeMesh = new THREE.Mesh(cubeGeometry, imgMaterial);
+
+    cubeMesh.position.y = poi.y;
+    cubeMesh.position.x = poi.x;
+    cubeMesh.position.z = poi.z;
+
+    if (poiVerte) {
+      cubeMesh.position.set(poiVerte.x, poiVerte.y, poiVerte.z);
+    }
+
+    this.scene.add(cubeMesh);
+    return cubeMesh;
+  }
+
+  private setLight() {
+    let light = new THREE.DirectionalLight(0xffffff, 1.5);
+    light.position.set(200, 200, 1);
+    this.scene.add(light);
+    return light;
   }
 
   private generateControl() {
@@ -140,16 +168,17 @@ export class ThreeDPage {
 
   private initGrid() {
     let gridHelper = new THREE.GridHelper(this.gridRadius, 10, 0x0000ff, 0x808080);
-    this.scene.add(gridHelper);
+    // this.scene.add(gridHelper);
   }
 
-  private rabitAnimation(rabitModel){
-    if(rabitModel && rabitModel.position){
+  private rabitAnimation(rabitModel) {
+    if (rabitModel && rabitModel.position) {
       rabitModel.position.x += 0.1;
       rabitModel.rotation.x += 0.01;
       rabitModel.rotation.z += 0.01;
     }
   }
+
   private loadModel() {
     this.vtkLoaderProvider = new VtkLoaderProvider();
     this.vtkLoaderProvider.loadModel(THREE).subscribe(data => {
@@ -173,11 +202,10 @@ export class ThreeDPage {
     this.texture.needsUpdate = true;
     this.clockProvider.start();
     this.renderer.render(this.scene, this.camera);
-    // this.animatePillar(this.pillars);
+    this.animatePillar(this.pillars);
     this.rabitAnimation(this.rabbit);
     this.pillarAnimateLimit++;
   }
-
 
   ionViewDidEnter() {
     this.generateCamera();
@@ -189,6 +217,11 @@ export class ThreeDPage {
     this.pillars = this.addPillar();
     this.initGrid();
     this.addClockCube();
+    this.addTextureCube({x: 0, y: 64,z:0});
+    this.addTextureCube({x: 200, y: 64});
+    this.addTextureCube({x: 0, y: 64, z: 200});
+    this.addTextureCube({}, {x: 200, y: 200, z: 0});
+    this.setLight();
 
     this.loadModel();
     this.runAnimate();

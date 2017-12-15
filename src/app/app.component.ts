@@ -15,7 +15,7 @@ import {WebglPage} from "../pages/webgl/webgl";
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = WebglPage;
+  rootPage: any = ThreeDPage;
 
   pages: Array<{title: string, component: any}>;
 
