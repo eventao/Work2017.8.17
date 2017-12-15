@@ -64,7 +64,7 @@ export class DrawCubeTextureComponent {
 
   initMatrices(canvas) {
     this.modelViewMatrix = this.mat4.create();
-    this.mat4.translate(this.modelViewMatrix, this.modelViewMatrix, [0, 0, -8]);
+    this.mat4.translate(this.modelViewMatrix, this.modelViewMatrix, [0, 0, -4]);
 
     this.projectionMatrix = this.mat4.create();
     this.mat4.perspective(this.projectionMatrix, Math.PI / 4, canvas.width / canvas.height, 1, 10000);
