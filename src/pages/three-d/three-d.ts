@@ -126,7 +126,7 @@ export class ThreeDPage {
     let ra = Math.random();
     let cueColor = '../assets/imgs/cue-color.jpg';
     let map = THREE.ImageUtils.loadTexture(ra > 0.5 ? '../assets/imgs/cue.jpg' : cueColor);
-    let imgMaterial = new THREE.MeshBasicMaterial({map});
+    let imgMaterial = new THREE.MeshPhongMaterial({map});
     let cubeMesh = new THREE.Mesh(cubeGeometry, imgMaterial);
 
     cubeMesh.position.y = poi.y;
@@ -143,7 +143,7 @@ export class ThreeDPage {
 
   private setLight() {
     let light = new THREE.DirectionalLight(0xffffff, 1.5);
-    light.position.set(200, 200, 1);
+    light.position.set(200, 200, 200);
     this.scene.add(light);
     return light;
   }
