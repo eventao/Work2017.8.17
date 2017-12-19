@@ -1,21 +1,14 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {IonicPage} from 'ionic-angular';
 import * as THREE from 'three';
 import * as OrbitControls from 'three-orbit-controls';
-import * as Detector from 'three/examples/js/Detector';
-import '../../lib/loader/DDSLoader';
-import '../../lib/loader/MTLLoader';
-import '../../lib/loader/OBJLoader';
 
-// import "three/examples/js/loaders/DDSLoader";
-// import "three/examples/js/loaders/MTLLoader";
-// import "three/examples/js/loaders/OBJLoader";
-// import {TrackballControls} from 'three-trackballcontrols';
+import {DDSLoader} from '../../lib/loader/DDSLoader';
+import {MTLLoader} from '../../lib/loader/MTLLoader';
+import {OBJLoader} from '../../lib/loader/OBJLoader';
+
 import {ClockProvider} from "../../providers/clock/clock";
 import {Vector} from "../../models/CommonModel";
-
-
-import {VtkLoaderProvider} from "../../providers/model-loader/vtk-loader-provider";
 
 @IonicPage()
 @Component({
@@ -33,15 +26,17 @@ export class ThreeDPage {
   height: any;
   gridRadius: number = 1000;
   clockProvider: ClockProvider;
-  vtkLoaderProvider: VtkLoaderProvider;
   pillars = [];
   pillarAnimateLimit = 0;
-  rabbit = null;
   clockMesh = null;
   textureCubes = [];
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, public eleRef: ElementRef) {}
-
+  maleCube=null;
+  constructor() {}
+  private static scriptExtendLoad(){
+    DDSLoader.init(THREE);
+    MTLLoader.init(THREE);
+    OBJLoader.init(THREE);
+  }
   private generateCamera() {
     this.width = this.wrapper.nativeElement.clientWidth;
     this.height = this.wrapper.nativeElement.clientHeight;
@@ -63,7 +58,7 @@ export class ThreeDPage {
   }
 
   //四舍五入获取范围随机数
-  private RandomBoth(Min, Max) {
+  private static RandomBoth(Min, Max) {
     let Range = Max - Min;
     let Rand = Math.random();
     return Min + Math.round(Rand * Range); //四舍五入
@@ -75,16 +70,16 @@ export class ThreeDPage {
     let pR = 800;
     let innerLimit = 50;
     cubes.forEach((c, i) => {
-      let rX1 = this.RandomBoth(-pR, -innerLimit);
-      let rX2 = this.RandomBoth(innerLimit, pR);
-      let rZ1 = this.RandomBoth(-pR, -innerLimit);
-      let rZ2 = this.RandomBoth(innerLimit, pR);
+      let rX1 = ThreeDPage.RandomBoth(-pR, -innerLimit);
+      let rX2 = ThreeDPage.RandomBoth(innerLimit, pR);
+      let rZ1 = ThreeDPage.RandomBoth(-pR, -innerLimit);
+      let rZ2 = ThreeDPage.RandomBoth(innerLimit, pR);
       let randomChoiseBoth = Math.random();
       let rX = randomChoiseBoth > 0.5 ? rX1 : rX2;
       randomChoiseBoth = Math.random();
       let rZ = randomChoiseBoth > 0.5 ? rZ1 : rZ2;
-      let randomColor = this.RandomBoth(0x000000, 0xffffff);
-      let cube = this.generateCube(25, 25, 25, randomColor);
+      let randomColor = ThreeDPage.RandomBoth(0x000000, 0xffffff);
+      let cube = ThreeDPage.generateCube(25, 25, 25, randomColor);
       cube.position.y = 12.5;
       cube.position.x = rX;
       cube.position.z = rZ;
@@ -96,6 +91,9 @@ export class ThreeDPage {
 
   private cubeAnimation(){
     this.clockMesh.rotation.y += 0.01;
+    // if(this.maleCube){
+    //   this.maleCube.rotation.y -= 0.01;
+    // }
   }
 
   //柱子随机位移
@@ -104,10 +102,10 @@ export class ThreeDPage {
       let pR = 400;
       let innerLimit = 200;
       pillars.forEach(cube => {
-        let rX1 = this.RandomBoth(-pR, -innerLimit);
-        let rX2 = this.RandomBoth(innerLimit, pR);
-        let rZ1 = this.RandomBoth(-pR, -innerLimit);
-        let rZ2 = this.RandomBoth(innerLimit, pR);
+        let rX1 = ThreeDPage.RandomBoth(-pR, -innerLimit);
+        let rX2 = ThreeDPage.RandomBoth(innerLimit, pR);
+        let rZ1 = ThreeDPage.RandomBoth(-pR, -innerLimit);
+        let rZ2 = ThreeDPage.RandomBoth(innerLimit, pR);
         let randomChoiseBoth = Math.random();
         let rX = randomChoiseBoth > 0.5 ? rX1 : rX2;
         randomChoiseBoth = Math.random();
@@ -118,7 +116,7 @@ export class ThreeDPage {
     }
   }
 
-  private generateCube(width, height, depth, color) {
+  private static generateCube(width, height, depth, color) {
     let geometry = new THREE.BoxGeometry(width, height, depth);
     let material = new THREE.MeshPhongMaterial({color: color});
     return new THREE.Mesh(geometry, material);
@@ -166,7 +164,7 @@ export class ThreeDPage {
 
   private setLight() {
     let light = new THREE.DirectionalLight(0xffffff, 1.5);
-    light.position.set(200, 200, 200);
+    light.position.set(0, 200, 200);
     this.scene.add(light);
     return light;
   }
@@ -191,10 +189,11 @@ export class ThreeDPage {
 
   private initGrid() {
     let gridHelper = new THREE.GridHelper(this.gridRadius, 10, 0x0000ff, 0x808080);
-    // this.scene.add(gridHelper);
+    this.scene.add(gridHelper);
   }
 
   private modelLoader(){
+    let malePath = "assets/obj/male02/";
     let self = this;
     let onProgress = function ( xhr ) {
       if ( xhr.lengthComputable ) {
@@ -202,49 +201,21 @@ export class ThreeDPage {
         console.log( percentComplete.toFixed(2) + '% downloaded' );
       }
     };
-
     THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
-
     let mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setPath( 'obj/male02/' );
+    mtlLoader.setPath( malePath );
     mtlLoader.load( 'male02_dds.mtl', function( materials ) {
-
       materials.preload();
-
       let objLoader = new THREE.OBJLoader();
       objLoader.setMaterials( materials );
-      objLoader.setPath( 'obj/male02/' );
+      objLoader.setPath( malePath );
       objLoader.load( 'male02.obj', function ( object ) {
-
-        object.position.y = - 95;
-        self.scene.add( object );
-
-      }, onProgress, (xhr)=>{} );
-
-    });
-  }
-
-  private rabitAnimation(rabitModel) {
-    if (rabitModel && rabitModel.position) {
-      rabitModel.position.x += 0.1;
-      rabitModel.rotation.x += 0.01;
-      rabitModel.rotation.z += 0.01;
-    }
-  }
-
-  private loadModel() {
-    this.vtkLoaderProvider = new VtkLoaderProvider();
-    this.vtkLoaderProvider.loadModel(THREE).subscribe(data => {
-
-      let material = new THREE.MeshLambertMaterial({color: 0xff0000, side: THREE.DoubleSide});
-      let mesh = new THREE.Mesh(data, material);
-      mesh.position.setY(0);
-      mesh.position.setZ(0);
-      mesh.position.setX(0);
-      // mesh.position.setY( - 0.09 );
-
-      this.scene.add(mesh);
-      this.rabbit = mesh;
+        self.maleCube = object;
+        self.maleCube.position.y = 130;
+        self.scene.add( self.maleCube );
+      }, onProgress, (xhr)=>{
+        console.log(xhr);
+      } );
     });
   }
 
@@ -255,15 +226,14 @@ export class ThreeDPage {
     this.texture.needsUpdate = true;
     this.clockProvider.start();
     this.renderer.render(this.scene, this.camera);
-    // this.animatePillar(this.pillars);
+    this.animatePillar(this.pillars);
     this.cubeAnimation();
     this.textureCubeAni();
-    this.rabitAnimation(this.rabbit);
     this.pillarAnimateLimit++;
   }
 
   ionViewDidEnter() {
-    console.log(THREE.DDSLoader,'THREE.DDSLoader');
+    ThreeDPage.scriptExtendLoad();
     this.generateCamera();
     this.generateScene();
 
@@ -279,7 +249,7 @@ export class ThreeDPage {
     this.addTextureCube({}, {x: 200, y: 200, z: 0});
     this.setLight();
 
-    this.loadModel();
+    this.modelLoader();
     this.runAnimate();
   }
 

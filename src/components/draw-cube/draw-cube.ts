@@ -1,4 +1,4 @@
-import {Component, ViewChild, ElementRef} from '@angular/core';
+import {Component, ElementRef} from '@angular/core';
 import * as glMatrix from "gl-matrix";
 
 @Component({
@@ -196,8 +196,7 @@ export class DrawCubeComponent {
           gl_FragColor = vColor;
       }`;
 
-    let shaderProgram, shaderVertexPositionAttribute, shaderVertexColorAttribute,
-      shaderProjectionMatrixUniform, shaderModelViewMatrixUniform;
+    let shaderProgram, shaderVertexPositionAttribute, shaderVertexColorAttribute;
 
     let fragmentShader = this.createShader(gl, fragmentShaderSource, "fragment");
     let vertexShader = this.createShader(gl, vertexShaderSource, "vertex");
