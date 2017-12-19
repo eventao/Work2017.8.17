@@ -144,8 +144,8 @@ export class ThreeDPage {
   private addTextureCube(poi, poiVerte = null) {
     let cubeGeometry = new THREE.CubeGeometry(128, 128, 128);
     let ra = Math.random();
-    let cueColor = '../assets/imgs/cue-color.jpg';
-    let map = THREE.ImageUtils.loadTexture(ra > 0.5 ? '../assets/imgs/cue.jpg' : cueColor);
+    let cueColor = '../assets/imgs/webwxgetmsgimg.jpg';
+    let map = THREE.ImageUtils.loadTexture(ra > 0.5 ? '../assets/imgs/webwxgetmsgimg.jpg' : cueColor);
     let imgMaterial = new THREE.MeshPhongMaterial({map});
     let cubeMesh = new THREE.Mesh(cubeGeometry, imgMaterial);
 
@@ -229,7 +229,52 @@ export class ThreeDPage {
     this.animatePillar(this.pillars);
     this.cubeAnimation();
     this.textureCubeAni();
+    this.sphereGroupAnima();
     this.pillarAnimateLimit++;
+  }
+
+  sphereGroup;
+  sphereGroupAnima(){
+    if(this.sphereGroup){
+      this.sphereGroup.rotation.y += 0.01;
+    }
+  }
+  /**
+   * 场景图
+   */
+  private objectGroupt(){
+    let cubeGroup = new THREE.Object3D();
+    let sphereGroup = this.sphereGroup = new THREE.Object3D();
+
+    let mapUrl = "./assets/imgs/cube-3d/ash_uvgrid01.jpg";
+    let map = THREE.ImageUtils.loadTexture(mapUrl);
+    let material = new THREE.MeshPhongMaterial({map});
+
+    let geometry = new THREE.CubeGeometry(140, 140, 140);
+    let cube = new THREE.Mesh(geometry,material);
+    cube.rotation.x = Math.PI / 5;
+    cube.rotation.y = Math.PI / 5;
+    cube.position.z = -350;
+    cube.position.x = -350;
+    cube.position.y = 200;
+    cubeGroup.add(cube);
+
+    cubeGroup.add(sphereGroup);
+    sphereGroup.position.set(0,300,-400);
+
+    let sphereGometry = new THREE.SphereGeometry(100,200,200);
+    let sphere1 = new THREE.Mesh(sphereGometry,material);
+    sphereGroup.add(sphere1);
+
+
+    let cylinderGeometry = new THREE.CylinderGeometry(0,33.3,44.4,200,50);
+    let cone = new THREE.Mesh(cylinderGeometry,material);
+    cone.position.set(130,130,0);
+    sphereGroup.add(cone);
+
+    this.scene.add(cubeGroup);
+
+
   }
 
   ionViewDidEnter() {
@@ -250,6 +295,7 @@ export class ThreeDPage {
     this.setLight();
 
     this.modelLoader();
+    this.objectGroupt();
     this.runAnimate();
   }
 
