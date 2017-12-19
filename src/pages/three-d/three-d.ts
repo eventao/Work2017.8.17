@@ -164,7 +164,7 @@ export class ThreeDPage {
 
   private setLight() {
     let light = new THREE.DirectionalLight(0xffffff, 1.5);
-    light.position.set(0, 200, 200);
+    light.position.set(0, 350, 350);
     this.scene.add(light);
     return light;
   }
