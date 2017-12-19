@@ -2,9 +2,19 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import * as THREE from 'three';
 import * as OrbitControls from 'three-orbit-controls';
+import * as Detector from 'three/examples/js/Detector';
+import '../../lib/loader/DDSLoader';
+import '../../lib/loader/MTLLoader';
+import '../../lib/loader/OBJLoader';
+
+// import "three/examples/js/loaders/DDSLoader";
+// import "three/examples/js/loaders/MTLLoader";
+// import "three/examples/js/loaders/OBJLoader";
 // import {TrackballControls} from 'three-trackballcontrols';
 import {ClockProvider} from "../../providers/clock/clock";
 import {Vector} from "../../models/CommonModel";
+
+
 import {VtkLoaderProvider} from "../../providers/model-loader/vtk-loader-provider";
 
 @IonicPage()
@@ -27,6 +37,8 @@ export class ThreeDPage {
   pillars = [];
   pillarAnimateLimit = 0;
   rabbit = null;
+  clockMesh = null;
+  textureCubes = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public eleRef: ElementRef) {}
 
@@ -82,6 +94,10 @@ export class ThreeDPage {
     return cubes;
   }
 
+  private cubeAnimation(){
+    this.clockMesh.rotation.y += 0.01;
+  }
+
   //柱子随机位移
   private animatePillar(pillars) {
     if (this.pillarAnimateLimit % 30 === 0) {
@@ -104,7 +120,7 @@ export class ThreeDPage {
 
   private generateCube(width, height, depth, color) {
     let geometry = new THREE.BoxGeometry(width, height, depth);
-    let material = new THREE.MeshBasicMaterial({color: color});
+    let material = new THREE.MeshPhongMaterial({color: color});
     return new THREE.Mesh(geometry, material);
   }
 
@@ -113,12 +129,18 @@ export class ThreeDPage {
     let vector = new Vector(64, 64, 0);
     this.clockProvider = new ClockProvider(vector, 64, 10, 12.5);
     this.texture = this.texture || new THREE.Texture(this.clockProvider.canvas);
-    let material = new THREE.MeshBasicMaterial({map: this.texture});
-    let mesh = this.clockProvider.mesh = this.clockProvider.mesh || new THREE.Mesh(cubeGeometry, material);
+    let material = new THREE.MeshPhongMaterial({map: this.texture});
+    let mesh = this.clockMesh = this.clockProvider.mesh = this.clockProvider.mesh || new THREE.Mesh(cubeGeometry, material);
     mesh.position.y = 64;
     mesh.position.x = -200;
     this.scene.add(mesh);
     return mesh;
+  }
+
+  textureCubeAni(){
+    this.textureCubes.forEach(cube => {
+      cube.rotation.y += 0.03
+    });
   }
 
   private addTextureCube(poi, poiVerte = null) {
@@ -138,6 +160,7 @@ export class ThreeDPage {
     }
 
     this.scene.add(cubeMesh);
+    this.textureCubes.push(cubeMesh);
     return cubeMesh;
   }
 
@@ -171,6 +194,36 @@ export class ThreeDPage {
     // this.scene.add(gridHelper);
   }
 
+  private modelLoader(){
+    let self = this;
+    let onProgress = function ( xhr ) {
+      if ( xhr.lengthComputable ) {
+        let percentComplete = xhr.loaded / xhr.total * 100;
+        console.log( percentComplete.toFixed(2) + '% downloaded' );
+      }
+    };
+
+    THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+
+    let mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setPath( 'obj/male02/' );
+    mtlLoader.load( 'male02_dds.mtl', function( materials ) {
+
+      materials.preload();
+
+      let objLoader = new THREE.OBJLoader();
+      objLoader.setMaterials( materials );
+      objLoader.setPath( 'obj/male02/' );
+      objLoader.load( 'male02.obj', function ( object ) {
+
+        object.position.y = - 95;
+        self.scene.add( object );
+
+      }, onProgress, (xhr)=>{} );
+
+    });
+  }
+
   private rabitAnimation(rabitModel) {
     if (rabitModel && rabitModel.position) {
       rabitModel.position.x += 0.1;
@@ -202,12 +255,15 @@ export class ThreeDPage {
     this.texture.needsUpdate = true;
     this.clockProvider.start();
     this.renderer.render(this.scene, this.camera);
-    this.animatePillar(this.pillars);
+    // this.animatePillar(this.pillars);
+    this.cubeAnimation();
+    this.textureCubeAni();
     this.rabitAnimation(this.rabbit);
     this.pillarAnimateLimit++;
   }
 
   ionViewDidEnter() {
+    console.log(THREE.DDSLoader,'THREE.DDSLoader');
     this.generateCamera();
     this.generateScene();
 
