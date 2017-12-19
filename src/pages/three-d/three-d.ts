@@ -30,13 +30,17 @@ export class ThreeDPage {
   pillarAnimateLimit = 0;
   clockMesh = null;
   textureCubes = [];
-  maleCube=null;
-  constructor() {}
-  private static scriptExtendLoad(){
+  maleCube = null;
+
+  constructor() {
+  }
+
+  private static scriptExtendLoad() {
     DDSLoader.init(THREE);
     MTLLoader.init(THREE);
     OBJLoader.init(THREE);
   }
+
   private generateCamera() {
     this.width = this.wrapper.nativeElement.clientWidth;
     this.height = this.wrapper.nativeElement.clientHeight;
@@ -51,7 +55,7 @@ export class ThreeDPage {
   }
 
   private generateRenderer() {
-    this.renderer = new THREE.WebGLRenderer({antialias:true});
+    this.renderer = new THREE.WebGLRenderer({antialias: true});
     this.renderer.setSize(this.width, this.height - 4);
     this.renderer.setClearColor(0x000000, 1.0);
     this.wrapper.nativeElement.appendChild(this.renderer.domElement);
@@ -89,7 +93,7 @@ export class ThreeDPage {
     return cubes;
   }
 
-  private cubeAnimation(){
+  private cubeAnimation() {
     this.clockMesh.rotation.y += 0.01;
     // if(this.maleCube){
     //   this.maleCube.rotation.y -= 0.01;
@@ -135,7 +139,7 @@ export class ThreeDPage {
     return mesh;
   }
 
-  textureCubeAni(){
+  textureCubeAni() {
     this.textureCubes.forEach(cube => {
       cube.rotation.y += 0.03
     });
@@ -192,30 +196,30 @@ export class ThreeDPage {
     this.scene.add(gridHelper);
   }
 
-  private modelLoader(){
+  private modelLoader() {
     let malePath = "assets/obj/male02/";
     let self = this;
-    let onProgress = function ( xhr ) {
-      if ( xhr.lengthComputable ) {
+    let onProgress = function (xhr) {
+      if (xhr.lengthComputable) {
         let percentComplete = xhr.loaded / xhr.total * 100;
-        console.log( percentComplete.toFixed(2) + '% downloaded' );
+        console.log(percentComplete.toFixed(2) + '% downloaded');
       }
     };
-    THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
     let mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setPath( malePath );
-    mtlLoader.load( 'male02_dds.mtl', function( materials ) {
+    mtlLoader.setPath(malePath);
+    mtlLoader.load('male02_dds.mtl', function (materials) {
       materials.preload();
       let objLoader = new THREE.OBJLoader();
-      objLoader.setMaterials( materials );
-      objLoader.setPath( malePath );
-      objLoader.load( 'male02.obj', function ( object ) {
+      objLoader.setMaterials(materials);
+      objLoader.setPath(malePath);
+      objLoader.load('male02.obj', function (object) {
         self.maleCube = object;
         self.maleCube.position.y = 130;
-        self.scene.add( self.maleCube );
-      }, onProgress, (xhr)=>{
+        self.scene.add(self.maleCube);
+      }, onProgress, (xhr) => {
         console.log(xhr);
-      } );
+      });
     });
   }
 
@@ -234,16 +238,34 @@ export class ThreeDPage {
   }
 
   sphereGroup;
-  sphereGroupAnima(){
-    if(this.sphereGroup){
+  cubeGroup;
+  sphere1;
+  cone;
+
+  sphereGroupAnima() {
+    if (this.sphereGroup) {
       this.sphereGroup.rotation.y += 0.01;
     }
+    if (this.cubeGroup) {
+      this.cubeGroup.rotation.y += 0.05;
+    }
+    if (this.sphere1) {
+      this.sphere1.rotation.y += 0.03;
+      // this.sphere1.rotation.x += 0.03;
+      // this.sphere1.rotation.z += 0.03;
+    }
+    if (this.cone) {
+      this.cone.rotation.y += 0.08;
+      // this.cone.rotation.x += 0.08;
+      // this.cone.rotation.z += 0.08;
+    }
   }
+
   /**
    * 场景图
    */
-  private objectGroupt(){
-    let cubeGroup = new THREE.Object3D();
+  private objectGroupt() {
+    let cubeGroup = this.cubeGroup = new THREE.Object3D();
     let sphereGroup = this.sphereGroup = new THREE.Object3D();
 
     let mapUrl = "./assets/imgs/cube-3d/ash_uvgrid01.jpg";
@@ -251,7 +273,7 @@ export class ThreeDPage {
     let material = new THREE.MeshPhongMaterial({map});
 
     let geometry = new THREE.CubeGeometry(140, 140, 140);
-    let cube = new THREE.Mesh(geometry,material);
+    let cube = new THREE.Mesh(geometry, material);
     cube.rotation.x = Math.PI / 5;
     cube.rotation.y = Math.PI / 5;
     cube.position.z = -350;
@@ -260,16 +282,16 @@ export class ThreeDPage {
     cubeGroup.add(cube);
 
     cubeGroup.add(sphereGroup);
-    sphereGroup.position.set(0,300,-400);
+    sphereGroup.position.set(0, 300, -400);
 
-    let sphereGometry = new THREE.SphereGeometry(100,200,200);
-    let sphere1 = new THREE.Mesh(sphereGometry,material);
+    let sphereGometry = new THREE.SphereGeometry(100, 200, 200);
+    let sphere1 = this.sphere1 = new THREE.Mesh(sphereGometry, material);
     sphereGroup.add(sphere1);
 
 
-    let cylinderGeometry = new THREE.CylinderGeometry(0,33.3,44.4,200,50);
-    let cone = new THREE.Mesh(cylinderGeometry,material);
-    cone.position.set(130,130,0);
+    let cylinderGeometry = new THREE.CylinderGeometry(0, 33.3, 44.4, 200, 50);
+    let cone = this.cone = new THREE.Mesh(cylinderGeometry, material);
+    cone.position.set(130, 130, 0);
     sphereGroup.add(cone);
 
     this.scene.add(cubeGroup);
@@ -288,7 +310,7 @@ export class ThreeDPage {
     this.pillars = this.addPillar();
     this.initGrid();
     this.addClockCube();
-    this.addTextureCube({x: 0, y: 64,z:0});
+    this.addTextureCube({x: 0, y: 64, z: 0});
     this.addTextureCube({x: 200, y: 64});
     this.addTextureCube({x: 0, y: 64, z: 200});
     this.addTextureCube({}, {x: 200, y: 200, z: 0});
