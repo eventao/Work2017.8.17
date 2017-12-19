@@ -256,7 +256,7 @@ export class ThreeDPage {
     }
     if (this.cone) {
       this.cone.rotation.y += 0.08;
-      // this.cone.rotation.x += 0.08;
+      this.cone.rotation.x += 0.08;
       // this.cone.rotation.z += 0.08;
     }
   }
