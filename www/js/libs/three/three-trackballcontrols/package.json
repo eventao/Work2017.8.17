@@ -1,0 +1,60 @@
+{
+  "_args": [
+    [
+      "three-trackballcontrols@0.0.7",
+      "E:\\source-code\\blueLake\\threejs\\Work2017.8.17"
+    ]
+  ],
+  "_development": true,
+  "_from": "three-trackballcontrols@0.0.7",
+  "_id": "three-trackballcontrols@0.0.7",
+  "_inBundle": false,
+  "_integrity": "sha1-Qsrh9oVtX4iequOg4vyp0hR5PpE=",
+  "_location": "/three-trackballcontrols",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "three-trackballcontrols@0.0.7",
+    "name": "three-trackballcontrols",
+    "escapedName": "three-trackballcontrols",
+    "rawSpec": "0.0.7",
+    "saveSpec": null,
+    "fetchSpec": "0.0.7"
+  },
+  "_requiredBy": [
+    "#DEV:/"
+  ],
+  "_resolved": "http://registry.npm.taobao.org/three-trackballcontrols/download/three-trackballcontrols-0.0.7.tgz",
+  "_spec": "0.0.7",
+  "_where": "E:\\source-code\\blueLake\\threejs\\Work2017.8.17",
+  "author": {
+    "name": "Jon Lim"
+  },
+  "bugs": {
+    "url": "https://github.com/JonLim/three-trackballcontrols/issues"
+  },
+  "description": "A module for using THREE.TrackballControls with nodejs",
+  "homepage": "https://github.com/JonLim/three-trackballcontrols#readme",
+  "keywords": [
+    "threejs",
+    "3d",
+    "trackball",
+    "controls",
+    "webGL"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "three-trackballcontrols",
+  "peerDependencies": {
+    "three": "^0.86.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JonLim/three-trackballcontrols.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.0.7"
+}
