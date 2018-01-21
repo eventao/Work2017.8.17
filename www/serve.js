@@ -1,7 +1,7 @@
-var express = require('express');
-var app = express();
+let express = require('express');
+let app = express();
 app.use('/',express.static(__dirname));
-var port = 8012;
+let port = 8013;
 app.listen(port,function(){
     console.log('server runing on ' + port);
 });

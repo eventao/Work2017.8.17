@@ -97,6 +97,8 @@ pinkCalf.placeInit.prototype = {
   },
   generateRenderer: function () {
     this.renderer = new THREE.WebGLRenderer({antialias: true});
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMapSoft = true;
     this.renderer.setSize(this.width, this.height - 4);
     this.renderer.setClearColor(0x000000, 1.0);
     this.wrapper.appendChild(this.renderer.domElement);
@@ -333,7 +335,7 @@ pinkCalf.placeInit.prototype = {
   },
 
   modelLoader: function () {
-    let malePath = "assets/obj/male02/";
+    let malePath = "./assets/obj/male02/";
     let self = this;
     let onProgress = function (xhr) {
       if (xhr.lengthComputable) {
@@ -371,24 +373,30 @@ pinkCalf.placeInit.prototype = {
     this.textureCubeAni();
     this.sphereGroupAnima();
   },
-
+  physi: function () {
+    Physijs.scripts.worker = './js/libs/physi/physijs_worker.js';
+    Physijs.scripts.ammo = './js/libs/physi/ammo.js';
+  },
   init: function () {
     this.generateCamera();
     this.generateScene();
     this.generateRenderer();
     this.generateControl();
-    this.pillars = this.addPillar();
     this.initGrid();
+    this.setLight();
+    this.createSkybox();
+
+    //region 添加内容
+    this.pillars = this.addPillar();
     this.addClockCube();
     this.addTextureCube({x: 0, y: 64, z: 0});
     this.addTextureCube({x: 200, y: 64});
     this.addTextureCube({x: 0, y: 64, z: 200});
     this.addTextureCube({}, {x: 200, y: 200, z: 0});
-
-    this.setLight();
     this.modelLoader();
     this.objectGroupt();
-    this.createSkybox();
+    //endregion
+
     this.runAnimate();
   },
 
