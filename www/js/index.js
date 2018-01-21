@@ -107,8 +107,7 @@ initScene = function() {
 };
 
 orbControl = function() {
-  let controls = new THREE.OrbitControls( camera );
-  controls.update();
+  new THREE.OrbitControls(camera,renderer.domElement);
 };
 
 render = function() {
@@ -132,7 +131,9 @@ createShape = (function() {
     function addListener() {
       let button = document.getElementById( 'stop' );
       if ( button ) {
-        button.addEventListener( 'click', function() { addshapes = false; } );
+        button.addEventListener( 'click', function() {
+          addshapes = !addshapes;
+        } );
       } else {
         setTimeout( addListener );
       }
